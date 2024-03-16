@@ -24,8 +24,8 @@ def main():
 
     # テキストファイルから取得するなど、コードを参照しなくても変更可能なようにする予定
     target_color = [44, 154, 84]
-    track_len = 30 
-    track_thickness = 10
+    track_len = 50 
+    track_thickness = 50
     
     
     exe_path = getexepath()

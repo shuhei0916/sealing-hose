@@ -15,6 +15,7 @@ import cv2
 import time
 import numpy as np
 import shutil
+from MCTest import writeData
 
 def main():
     # Parameters for lucas kanade optical flow
@@ -27,14 +28,15 @@ def main():
     target_color = [44, 154, 84]
     track_len = 30 
     track_thickness = 10
+    anomaly_threshold = 100 # 異常が何フレーム連続したら通知を出すのかのしきい値
     
     
     exe_path = getexepath()
-    input_vid = os.path.join(exe_path, 'master_data', 'raw_video', '01.mp4')
+    test_vid = os.path.join(exe_path, 'test_data', 'raw_videos', '02.mp4') # どれを入力とするのかを決める部分を実装する
     output_dir = os.path.join(exe_path, 'master_data', 'color_extracted')
     
     print("exe_path: " + exe_path)
-    print("input_vid: " + input_vid)
+    print("test_vid: " + test_vid)
     print("output_dir: " + output_dir)
 
     # color_extractedを空にする
@@ -42,18 +44,19 @@ def main():
     # os.mkdir(output_dir)
     
     
-    cap = cv2.VideoCapture(input_vid)
+    cap = cv2.VideoCapture(test_vid)
 
-    # # 入力動画からフレームレートとフレームサイズを取得
-    # fps = 30 #cap.get(cv2.CAP_PROP_FPS)
-    # frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    # frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    # 入力動画からフレームレートとフレームサイズを取得
+    fps = 30 #cap.get(cv2.CAP_PROP_FPS)
+    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
 
-    # # VideoWriterオブジェクトを作成
-    # fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # 'mp4v'はMP4形式のコーデック
-    # out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
+    # VideoWriterオブジェクトを作成
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # 'mp4v'はMP4形式のコーデック
+    out = cv2.VideoWriter('./data/0318_0102.mp4', fourcc, fps, (frame_width, frame_height))
 
     counter = 0
+    anomaly_level = 0
     
     while True:
         ret, frame = cap.read()
@@ -87,10 +90,20 @@ def main():
         cv2.line(test_frame, (x-5,y-5), (x+5,y+5), (0, 0, 255), 2)
         cv2.line(test_frame, (x+5,y-5), (x-5,y+5), (0, 0, 255), 2)
                 
+        # このフレームの状態
+        st = is_match(x, y, master_track_frame)
+        if not st:
+            anomaly_level += 1 # 異常度をインクリメント
+            if anomaly_level <= anomaly_threshold:
+                print("anomaly detected!!")
+                
+                # 要チェック！
+                sendMC = "02FF00044D2000000064010010"
+                writeData(sendMC) # 
+                
+                
+        cv2.putText(test_frame, str(st), (x-15, y-30), cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(169, 195, 247), thickness=1)
         
-        # print(is_match(x, y, master_track_frame))
-        
-        cv2.putText(test_frame, str(is_match(x, y, master_track_frame)), (x-15, y-30), cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(169, 195, 247), thickness=1)
         
         # 重心の座標を書き込む
         cv2.putText(test_frame, str((x, y)), (x-15, y-15), cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(169, 195, 247), thickness=1)
@@ -101,13 +114,16 @@ def main():
         
         cv2.imshow('combined_frame', combined_frame)
 
+
+        out.write(combined_frame)
+        
         if cv2.waitKey(5) & 0xFF == 27:
             break
 
         counter += 1
         
     cap.release()
-    # out.release()
+    out.release()
     cv2.destroyAllWindows()
     
 def getexepath():
@@ -127,10 +143,8 @@ def getexepath():
     return exe_path
 
 # 引数の座標が軌跡上にあるかどうか
-def is_match(a, b, current_mask):
-    x = int(a)
-    y = int(b)
-    return tuple(current_mask[x, y]) != (0, 0, 0)
+def is_match(x, y, current_mask):
+    return tuple(current_mask[y, x]) != (0, 0, 0)
 
 
 if __name__ == "__main__":
