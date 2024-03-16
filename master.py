@@ -22,9 +22,10 @@ def main():
                     criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 0.03))
 
 
+    # テキストファイルから取得するなど、コードを参照しなくても変更可能なようにする予定
     target_color = [44, 154, 84]
-    
-    track_len = 1 # テキストファイルから取得するなど、コードを参照しなくても変更可能なようにする予定
+    track_len = 30 
+    track_thickness = 10
     
     
     exe_path = getexepath()
@@ -72,12 +73,15 @@ def main():
             print("No object found")  # 追跡対象が見つからない場合の処理
             # 必要に応じて、追跡対象が見つからない状態を処理するコードをここに追加
         tracks.append((x, y))
+        # tracksの長さがtrack_lenより大きい場合、最も古い要素を削除
+        if len(tracks) > track_len:
+            tracks.pop(0)
         
         # track_lenの長さだけ軌跡を描画するよう変更予定
         for i in range(1, len(tracks)):
             if tracks[i - 1] is None or tracks[i] is None:
                 continue
-            cv2.line(res, tracks[i - 1], tracks[i], (255, 255, 0), 10) # resに書き込むのではなく、新しい画像に軌跡のみを描画するように変更予定
+            cv2.line(res, tracks[i - 1], tracks[i], (255, 255, 0), track_thickness) # resに書き込むのではなく、新しい画像に軌跡のみを描画するように変更予定
 
         # 重心位置に x印を書く
         # cv2.line(res, (x-5,y-5), (x+5,y+5), (0, 0, 255), 2)
