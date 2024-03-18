@@ -98,7 +98,7 @@ def main():
                 print("anomaly detected!!")
                 
                 # 要チェック！
-                sendMC = "02FF00044D2000000064010010"
+                sendMC = "02FF00044D20000000C8010010"
                 writeData(sendMC) # 
                 
                 

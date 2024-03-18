@@ -23,8 +23,10 @@ PORT = 1100             #使用ポートの設定
 #"""
 
 def writeData(sendMC:str) -> tuple[str, str]:
+    HOST = '192.168.1.250'  #通信相手機器のIPアドレス設定
+    PORT = 1100             #使用ポートの設定
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #通信用オブジェクトの取得
-    client.connect((HOST, PORT))                                #クライアント接続
+    client.connect((HOST, PORT))                               #クライアント接続
 
     client.send(sendMC.encode("ascii"))                         #コマンドの送信 → ASCIIコード変換
 
@@ -53,6 +55,8 @@ def writeData(sendMC:str) -> tuple[str, str]:
 #"""
 
 def readData(sendMC:str) -> tuple[str, str]:
+    HOST = '192.168.1.250'  #通信相手機器のIPアドレス設定
+    PORT = 1100             #使用ポートの設定
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #通信用オブジェクトの取得
     client.connect((HOST, PORT))                                #クライアント接続
 
@@ -66,12 +70,12 @@ def readData(sendMC:str) -> tuple[str, str]:
     comStatus = respData[2:4]                                   #終了コード取出し
 
     if comStatus == "00":                                       #正常終了であれば
-        rbStatus = respData[4:5]                                #ロボットの状態取得
-        productCode = respData[7:8] + respData[6:7] + respData[5:6]
+        rbStatus = respData[11:12]                                #ロボットの状態取得
+        productCode = respData[6:7] + respData[5:6] + respData[4:5]
 
         productNumber = str(int(productCode, 2))                #品番取得
-        #print(rbStatus)
-        #print(productNumber)
+        print(rbStatus)
+        print(productNumber)
     elif comStatus == "5B":                                     #異常終了であれば
         anomalousCode = response[4:6]
         
@@ -83,12 +87,12 @@ def main():
     res = True
     while(res):
 
-        sendMC = "00FF00044D20000000640400"         #送信文
+        sendMC = "00FF00044D20000000640800"         #送信文
         rbStatus, productNo = readData(sendMC)      #正常時 ロボット状態モニタ, 品番
                                                     #異常時 通信状態, 異常コード
 
-        sendMC = "02FF00044D2000000064010010"       #シーリングホース異常時
-        sendMC = "02FF00044D2000000064010000"       #シーリングホース正常時
+        sendMC = "02FF00044D20000000C8010010"       #シーリングホース異常時
+        sendMC = "02FF00044D20000000C8010000"       #シーリングホース正常時
 
         time.sleep(0.01)                            #スキャンタイム用待ち時間
 

@@ -4,6 +4,7 @@
 
 import cv2
 import os
+from MCTest import writeData, readData
 
 def main():
     # MODE変数の定義
@@ -20,7 +21,7 @@ def main():
         os.makedirs(save_directory)
 
     # カメラの初期化
-    cap = cv2.VideoCapture(0)
+    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
     if not cap.isOpened():
         print("カメラが開けません")
         exit()
@@ -38,6 +39,11 @@ def main():
     
     while True:
         ret, frame = cap.read()
+
+        # PCLとの通信部分
+        sendMC = "00FF00044D20000000640800" 
+        rbStatus, productNo = readData(sendMC) 
+
         if not ret:
             print("Failed to grab frame")
             break
@@ -46,7 +52,8 @@ def main():
         cv2.imshow("title", frame)
 
         key = cv2.waitKey(1) & 0xFF
-        if key == ord('s'):
+        if rbStatus == "1":   # if key == ord('s'):
+            print("productNo:", productNo)
             recording = not recording  # 録画の開始/停止をトグル
             if recording:
                 print("Recording started...")
