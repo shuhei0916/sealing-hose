@@ -8,12 +8,13 @@ pathの指定方法のエラーに対する対策
 """
 
 from color_extract import hsv_mask
-import sys
+from common import get_config, getexepath
 import os
 import cv2
 import time
 import numpy as np
 import shutil
+
 
 def main():
     # Parameters for lucas kanade optical flow
@@ -30,7 +31,7 @@ def main():
     
     exe_path = getexepath()
     input_vid = os.path.join(exe_path, 'master_data', 'raw_video', '01.mp4')
-    output_dir = os.path.join(exe_path, 'master_data', 'color_extracted')
+    output_dir = os.path.join(exe_path, 'master_data', 'track_frame')
     
     print("exe_path: " + exe_path)
     print("input_vid: " + input_vid)
@@ -42,15 +43,6 @@ def main():
     
     
     cap = cv2.VideoCapture(input_vid)
-
-    # # 入力動画からフレームレートとフレームサイズを取得
-    # fps = 30 #cap.get(cv2.CAP_PROP_FPS)
-    # frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    # frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-
-    # # VideoWriterオブジェクトを作成
-    # fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # 'mp4v'はMP4形式のコーデック
-    # out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height))
 
     tracks = []
     counter = 0
@@ -83,16 +75,6 @@ def main():
                 continue
             cv2.line(res, tracks[i - 1], tracks[i], (255, 255, 0), track_thickness) # resに書き込むのではなく、新しい画像に軌跡のみを描画するように変更予定
 
-        # 重心位置に x印を書く
-        # cv2.line(res, (x-5,y-5), (x+5,y+5), (0, 0, 255), 2)
-        # cv2.line(res, (x+5,y-5), (x-5,y+5), (0, 0, 255), 2)
-        
-        
-        # 重心の座標を書き込む
-        # cv2.putText(res, str((x, y)), (x-15, y-15), cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(169, 195, 247), thickness=1)
-        
-        # 処理されたフレームを出力動画に書き込む（テスト環境用）
-        # out.write(res)
         
         # ndarrayの形で保存
         outname = os.path.join(output_dir, 'master' + str(counter))
@@ -109,23 +91,6 @@ def main():
     cap.release()
     # out.release()
     cv2.destroyAllWindows()
-
-
-def getexepath():
-    if getattr(sys, 'frozen', False):
-        # 実行ファイルからの実行時
-        print("running from exe file...")
-        my_path = os.path.dirname(os.path.abspath(sys.argv[0]))
-        print("my_path:" + my_path)
-        exe_path = my_path + '/../' # 環境によっては別の参照方法の方が良い可能性あり。
-        exe_path = os.path.normpath(exe_path)
-    else:
-        # スクリプトからの実行時
-        print("running from script...")
-        exe_path = os.getcwd()
-        # print('getcwd:      ', os.getcwd())
-        # print('__file__:    ', __file__)
-    return exe_path
     
 
 if __name__ == "__main__":

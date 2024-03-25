@@ -30,6 +30,7 @@ def get_video_info(video_path):
 
     return video_info
 
+# これなに！？！？！
 def extract_color_mask(frame, target_hsv):
     mask = hsv_mask(frame, target_hsv)
     gray = cv2.cvtColor(mask, cv2.COLOR_BGR2GRAY)
