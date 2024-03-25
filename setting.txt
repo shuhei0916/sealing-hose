@@ -1,1 +1,3 @@
-track_len=50
+track_len=30 
+track_thickness=10
+anomaly_threshold=100

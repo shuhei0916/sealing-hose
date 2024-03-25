@@ -1,3 +1,6 @@
 # dataとOthersを無視
 data/
 Others/
+
+master_data/
+test_data/
