@@ -1,5 +1,8 @@
 """
-録画を行うコード    
+録画を行うコード
+TODO:
+    cv2.DSHOWの後処理：上下反転する
+
 """
 
 import cv2
@@ -7,6 +10,7 @@ import os
 from MCTest import writeData, readData
 import datetime
 import shutil
+
 
 def main():  
 
@@ -69,7 +73,7 @@ def vid_cap(save_directory, vid_name):
         key = cv2.waitKey(1) & 0xFF
 
         # PLCからの立ち上がり信号があったら、録画開始
-        if key == ord('s'): # rbStatus == "1":   # if key == ord('s'):
+        if key == ord('s'): # rbStatus == "1":
             
             # 異常ランプをOFFにする
             sendMC = "02FF00044D20000000C8010000" 
@@ -90,11 +94,11 @@ def vid_cap(save_directory, vid_name):
         # if key == ord("q"):
         #     break
 
+
     # リソースの解放
     cap.release()
     out.release()
     cv2.destroyAllWindows()
-
 
 
 if __name__ == "__main__":

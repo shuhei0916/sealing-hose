@@ -1,10 +1,7 @@
 """
-MASTERモードの実行ファイル    
-元動画からマーカー抽出→軌跡のフレームを保存
+masterのTODO:
+    vid_cap部分をmaster.py内に含める
 
-pathの指定方法のエラーに対する対策
-    os.path.joinを用いる。
-    パスの結合は実行ファイルから実行時の親ファイル参照時に使ってます。
 """
 
 from color_extract import hsv_mask
@@ -25,7 +22,15 @@ def main():
 
 
     exe_path = getexepath()
-    input_vid = os.path.join(exe_path, 'master_data', 'raw_video', '01.mp4')
+
+    input_dir = os.path.join(exe_path, 'master_data', 'raw_video')
+
+    ### ここにvid_cap部分を書くので良いよね？
+
+
+    input_file = os.listdir(input_dir)[0] # input_dir直下にあるファイルのうち一つだけが選択される
+
+    input_vid = os.path.join(input_dir, input_file)
     output_dir = os.path.join(exe_path, 'master_data', 'track_frames')
     
     print("exe_path: " + exe_path)
