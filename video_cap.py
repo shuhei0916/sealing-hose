@@ -6,15 +6,7 @@ import cv2
 import os
 from MCTest import writeData, readData
 
-def main():
-    # MODE変数の定義
-    MODE = "MASTER"  # この値を変更して、保存先ディレクトリを制御
-
-    # 保存先ディレクトリの決定
-    if MODE == "MASTER":
-        save_directory = "./master_video/raw_video" 
-    else:
-        save_directory = "./test_videos/raw_videos"
+def vid_cap(save_directory):
 
     # 保存先ディレクトリが存在しない場合は作成
     if not os.path.exists(save_directory):
@@ -53,6 +45,11 @@ def main():
 
         key = cv2.waitKey(1) & 0xFF
         if rbStatus == "1":   # if key == ord('s'):
+            
+            # いったんOFFにする
+            sendMC = "02FF00044D20000000C8010000" 
+            writeData(sendMC)
+
             print("productNo:", productNo)
             recording = not recording  # 録画の開始/停止をトグル
             if recording:
@@ -71,6 +68,11 @@ def main():
     cap.release()
     out.release()
     cv2.destroyAllWindows()
+
+
+def main():
+    print("hehe")
+
 
 if __name__ == "__main__":
     main()
