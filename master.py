@@ -17,13 +17,8 @@ import shutil
 
 
 def main():
-    # Parameters for lucas kanade optical flow
-    lk_params = dict( winSize  = (15,15),
-                    maxLevel = 2,
-                    criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 0.03))
 
-
-    target_color = [44, 154, 84]
+    target_color = [44, 154, 84] # green
     
     # 設定ファイルの読み込み
     settings = get_config()
@@ -38,7 +33,6 @@ def main():
     print("output_dir: " + output_dir)
 
     print("track_length: ", settings["track_length"])
-    print(type(settings["track_length"]))
     print("track_thickness: ", settings["track_thickness"])
     print("anomaly_threshold: ", settings["anomaly_threshold"])
 
