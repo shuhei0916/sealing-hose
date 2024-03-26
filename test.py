@@ -1,4 +1,5 @@
 from color_extract import hsv_mask
+from common import get_config, getexepath, confirm_consistency
 import os
 import cv2
 import time
@@ -6,17 +7,6 @@ import numpy as np
 import shutil
 from MCTest import writeData
 
-# 設定ファイルの読み込み
-def get_config():
-    with open("setting.txt", "r") as f:
-        lines = f.readlines()
-
-    settings = {}
-    for line in lines:
-        key, value = line.strip().split("=")
-        settings[key] = value
-
-    return settings
 
 # 
 def get_video_info(video_path):
@@ -50,9 +40,12 @@ def is_match(x, y, current_mask):
 
     return tuple(current_mask[y, x]) != (0, 0, 0)
 
-def main():
-    settings = get_config()
 
+def main():
+    if not confirm_consistency():
+        return 0
+        
+    settings = get_config()
 
     target_color = [44, 154, 84]
     test_video = './test_data/raw_videos/01.mp4'
