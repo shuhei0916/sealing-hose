@@ -47,11 +47,13 @@ def main():
         
     settings = get_config()
 
+    exe_path = getexepath()
+
     target_color = [44, 154, 84]
     test_video = './test_data/raw_videos/01.mp4'
     video_info = get_video_info(test_video)
 
-    output_dir = os.path.join(settings["exe_path"], "master_data", "color_extracted")
+    output_dir = os.path.join(exe_path, "master_data", "color_extracted")
     shutil.rmtree(output_dir)
     os.mkdir(output_dir)
 
@@ -70,7 +72,7 @@ def main():
             break
 
         filename = 'master' + str(frame_count + int(settings["track_length"] / 2)) + '.npy'
-        master_track_frame = np.load(os.path.join(settings["exe_path"], "master_data", "color_extracted", filename))
+        master_track_frame = np.load(os.path.join(exe_path, "master_data", "color_extracted", filename))
 
         test_frame, x, y = extract_color_mask(frame, target_color)
 
@@ -82,7 +84,7 @@ def main():
         is_frame_matched = is_match(x, y, master_track_frame)
         if not is_frame_matched:
             anomaly_count += 1 # 異常度をインクリメント
-            if anomaly_count <= settings["anomaly_threshold_frames"]:
+            if anomaly_count <= settings["anomaly_threshold"]:
                 print("anomaly detected!!")
 
                 # 要チェック！

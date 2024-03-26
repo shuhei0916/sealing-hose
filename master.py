@@ -8,7 +8,7 @@ pathの指定方法のエラーに対する対策
 """
 
 from color_extract import hsv_mask
-from common import get_config, getexepath
+from common import get_config, getexepath, get_config
 import os
 import cv2
 import time
@@ -23,21 +23,28 @@ def main():
                     criteria = (cv2.TERM_CRITERIA_EPS | cv2.TERM_CRITERIA_COUNT, 10, 0.03))
 
 
-    # テキストファイルから取得するなど、コードを参照しなくても変更可能なようにする予定
     target_color = [44, 154, 84]
-    track_len = 50 
-    track_thickness = 50
     
-    
+    # 設定ファイルの読み込み
+    settings = get_config()
+
+
     exe_path = getexepath()
     input_vid = os.path.join(exe_path, 'master_data', 'raw_video', '01.mp4')
-    output_dir = os.path.join(exe_path, 'master_data', 'track_frame')
+    output_dir = os.path.join(exe_path, 'master_data', 'track_frames')
     
     print("exe_path: " + exe_path)
     print("input_vid: " + input_vid)
     print("output_dir: " + output_dir)
 
-    # color_extractedを空にする
+    print("track_length: ", settings["track_length"])
+    print(type(settings["track_length"]))
+    print("track_thickness: ", settings["track_thickness"])
+    print("anomaly_threshold: ", settings["anomaly_threshold"])
+
+    # exit(0)
+
+    # out_dirを空にする
     shutil.rmtree(output_dir)
     os.mkdir(output_dir)
     
@@ -66,14 +73,14 @@ def main():
             # 必要に応じて、追跡対象が見つからない状態を処理するコードをここに追加
         tracks.append((x, y))
         # tracksの長さがtrack_lenより大きい場合、最も古い要素を削除
-        if len(tracks) > track_len:
+        if len(tracks) > int(settings["track_length"]):
             tracks.pop(0)
         
         # track_lenの長さだけ軌跡を描画するよう変更予定
         for i in range(1, len(tracks)):
             if tracks[i - 1] is None or tracks[i] is None:
                 continue
-            cv2.line(res, tracks[i - 1], tracks[i], (255, 255, 0), track_thickness) # resに書き込むのではなく、新しい画像に軌跡のみを描画するように変更予定
+            cv2.line(res, tracks[i - 1], tracks[i], (255, 255, 0), int(settings["track_thickness"])) # resに書き込むのではなく、新しい画像に軌跡のみを描画するように変更予定
 
         
         # ndarrayの形で保存
@@ -89,7 +96,6 @@ def main():
         counter += 1
         
     cap.release()
-    # out.release()
     cv2.destroyAllWindows()
     
 
