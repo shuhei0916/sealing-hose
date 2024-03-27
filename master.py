@@ -1,6 +1,5 @@
 """
 masterのTODO:
-    vid_cap部分をmaster.py内に含める
 
 """
 
@@ -16,7 +15,6 @@ import datetime
 
 
 def main():
-
     target_color = [44, 154, 84] # green
     
     # 設定ファイルの読み込み
@@ -25,6 +23,7 @@ def main():
     # カレントディレクトリの取得
     exe_path = getexepath()
 
+    # 録画したデータを保存するディレクトリを指定
     input_dir = os.path.join(exe_path, 'master_data', 'raw_video')
 
     # 録画の開始
@@ -32,7 +31,10 @@ def main():
     vid_name = dt_now.strftime('%m%d_%H%M')
     vid_cap(input_dir, vid_name)
 
-    input_file = os.listdir(input_dir)[0] # input_dir直下にあるファイルのうち一つだけが選択される
+
+    # 録画終了後、計算処理開始
+    # input_dir直下にあるファイルのうち一つだけが選択される
+    input_file = os.listdir(input_dir)[0] 
 
     input_vid = os.path.join(input_dir, input_file)
     output_dir = os.path.join(exe_path, 'master_data', 'track_frames')
