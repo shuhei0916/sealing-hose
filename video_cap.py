@@ -35,9 +35,6 @@ def vid_cap(save_directory, vid_name):
     shutil.rmtree(save_directory)
     os.mkdir(save_directory)
 
-    # # 保存先ディレクトリが存在しない場合は作成
-    # if not os.path.exists(save_directory):
-    #     os.makedirs(save_directory)
 
     # カメラの初期化
     cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
