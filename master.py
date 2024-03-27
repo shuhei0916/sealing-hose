@@ -6,11 +6,13 @@ masterのTODO:
 
 from color_extract import hsv_mask
 from common import get_config, getexepath, get_config
+from video_cap import vid_cap
 import os
 import cv2
 import time
 import numpy as np
 import shutil
+import datetime
 
 
 def main():
@@ -20,13 +22,15 @@ def main():
     # 設定ファイルの読み込み
     settings = get_config()
 
-
+    # カレントディレクトリの取得
     exe_path = getexepath()
 
     input_dir = os.path.join(exe_path, 'master_data', 'raw_video')
 
-    ### ここにvid_cap部分を書くので良いよね？
-
+    # 録画の開始
+    dt_now = datetime.datetime.now()
+    vid_name = dt_now.strftime('%m%d_%H%M')
+    vid_cap(input_dir, vid_name)
 
     input_file = os.listdir(input_dir)[0] # input_dir直下にあるファイルのうち一つだけが選択される
 
@@ -43,7 +47,7 @@ def main():
 
     # exit(0)
 
-    # out_dirを空にする
+    # out_directoryを空にする
     shutil.rmtree(output_dir)
     os.mkdir(output_dir)
     

@@ -37,19 +37,26 @@ def vid_cap(save_directory, vid_name):
 
 
     # カメラの初期化
-    cap = cv2.VideoCapture(0, cv2.CAP_DSHOW)
+    cap = cv2.VideoCapture("./data/01.mp4") # , cv2.CAP_DSHOW)
     if not cap.isOpened():
-        print("カメラが開けません")
+        print("can't open the camera.")
         exit()
-        
+
+    # fpsを30に固定    
     cap.set(cv2.CAP_PROP_FPS, 30)
+    
+    # 入力動画の情報を取得
+    fps = 30 #cap.get(cv2.CAP_PROP_FPS)
+    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     
     # 動画ファイルの保存設定
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     vid_name = vid_name + ".mp4"
     out_path = os.path.join(save_directory, vid_name)
-    out = cv2.VideoWriter(out_path, fourcc, 30.0, (640, 480))
-    
+    out = cv2.VideoWriter(out_path, fourcc, fps, (frame_width, frame_height)) 
+
+
     recording = False  # 録画開始フラグ
 
     print("Press 's' to start/stop recording. Press 'q' to quit.")
@@ -58,8 +65,8 @@ def vid_cap(save_directory, vid_name):
         ret, frame = cap.read()
 
         # PCLとの通信部分
-        sendMC = "00FF00044D20000000640800" 
-        rbStatus, productNo = readData(sendMC) 
+        # sendMC = "00FF00044D20000000640800" 
+        # rbStatus, productNo = readData(sendMC) 
 
         if not ret:
             print("Failed to grab frame")
@@ -72,9 +79,9 @@ def vid_cap(save_directory, vid_name):
         # PLCからの立ち上がり信号があったら、録画開始
         if key == ord('s'): # rbStatus == "1":
             
-            # 異常ランプをOFFにする
-            sendMC = "02FF00044D20000000C8010000" 
-            writeData(sendMC)
+            # # 異常ランプをOFFにする
+            # sendMC = "02FF00044D20000000C8010000" 
+            # writeData(sendMC)
 
             # print("productNo:", productNo)
             recording = not recording  # 録画の開始/停止をトグル
@@ -82,7 +89,7 @@ def vid_cap(save_directory, vid_name):
                 print("Recording started...")
             else:
                 print("Recording stopped.")
-                return 0 # 要確認
+                break
         
         # 録画中の場合、フレームを書き込む
         if recording:
@@ -96,6 +103,7 @@ def vid_cap(save_directory, vid_name):
     cap.release()
     out.release()
     cv2.destroyAllWindows()
+    print("vid_cap finished!")
 
 
 if __name__ == "__main__":

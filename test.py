@@ -8,17 +8,17 @@ import shutil
 from MCTest import writeData
 
 
-# 
-def get_video_info(video_path):
-    cap = cv2.VideoCapture(video_path)
+# # 
+# def get_video_info(video_path):
+#     cap = cv2.VideoCapture(video_path)
 
-    video_info = {}
-    video_info["fps"] = cap.get(cv2.CAP_PROP_FPS)
-    video_info["frame_width"] = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    video_info["frame_height"] = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
-    video_info["filename"] = os.path.basename(video_path)
+#     video_info = {}
+#     video_info["fps"] = cap.get(cv2.CAP_PROP_FPS)
+#     video_info["frame_width"] = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+#     video_info["frame_height"] = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+#     video_info["filename"] = os.path.basename(video_path)
 
-    return video_info
+#     return video_info
 
 # これなに！？！？！
 def extract_color_mask(frame, target_hsv):
@@ -45,23 +45,32 @@ def main():
     if not confirm_consistency():
         return 0
         
+    # 設定ファイルの読み込み
     settings = get_config()
 
+    # カレントディレクトリの取得
     exe_path = getexepath()
 
     target_color = [44, 154, 84]
     test_video = './test_data/raw_videos/01.mp4'
-    video_info = get_video_info(test_video)
+    # video_info = get_video_info(test_video)
 
     output_dir = os.path.join(exe_path, "master_data", "color_extracted")
+
+    # output_dirを空にする
     shutil.rmtree(output_dir)
     os.mkdir(output_dir)
 
     cap = cv2.VideoCapture(test_video)
 
+    # 入力動画の情報を取得
+    fps = 30 #cap.get(cv2.CAP_PROP_FPS)
+    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
     # 書き出し用のVideoWriterの設定
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter(os.path.join(output_dir, "output.mp4"), fourcc, video_info["fps"], (video_info["frame_width"], video_info["frame_height"]))
+    out = cv2.VideoWriter(os.path.join(output_dir, "output.mp4"), fourcc, fps, (frame_width, frame_height))
 
     frame_count = 0
     anomaly_count = 0
