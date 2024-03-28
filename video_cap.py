@@ -1,7 +1,5 @@
 """
 録画を行うコード
-TODO:
-    cv2.DSHOWの後処理：上下反転する
 
 """
 
@@ -10,6 +8,7 @@ import os
 from MCTest import writeData, readData
 import datetime
 import shutil
+import time
 
 
 def main():  
@@ -37,7 +36,7 @@ def vid_cap(save_directory, vid_name):
 
 
     # カメラの初期化
-    cap = cv2.VideoCapture("./data/01.mp4") # , cv2.CAP_DSHOW)
+    cap = cv2.VideoCapture(0) # cv2.CAP_DSHOW
     if not cap.isOpened():
         print("can't open the camera.")
         exit()
@@ -56,48 +55,62 @@ def vid_cap(save_directory, vid_name):
     out_path = os.path.join(save_directory, vid_name)
     out = cv2.VideoWriter(out_path, fourcc, fps, (frame_width, frame_height)) 
 
-
-    recording = False  # 録画開始フラグ
-
-    print("Press 's' to start/stop recording. Press 'q' to quit.")
     
+    recording = False  # 録画開始フラグ
+    rbStatus_old = None
+
+    memory = datetime.datetime.now()
+
     while True:
         ret, frame = cap.read()
 
-        # PCLとの通信部分
-        # sendMC = "00FF00044D20000000640800" 
-        # rbStatus, productNo = readData(sendMC) 
+        # 現在時刻とmemoryの差分を取得
+        now = datetime.datetime.now()
+        p = datetime.timedelta.total_seconds(now - memory)
 
+        if p > 0.04:
+            memory = datetime.datetime.now()
+
+            # PCLとの通信部分
+            sendMC = "00FF00044D20000000640800" 
+            rbStatus, productNo = readData(sendMC) 
+
+        # print("rbStatus:", rbStatus, ", productNo: ", productNo)
         if not ret:
             print("Failed to grab frame")
             break
 
+
+        # print("recording:", recording, rbStatus_old, rbStatus)
+        text = "recording: " + str(recording) + ", rbStatus: " + str(rbStatus) + ", rbStatus_old: " + str(rbStatus_old)
+        cv2.putText(frame, text, (10, 10), cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(0, 0, 255), thickness=1)
+        
         # フレームの表示
         cv2.imshow("title", frame)
         key = cv2.waitKey(1) & 0xFF
 
-        # PLCからの立ち上がり信号があったら、録画開始
-        if key == ord('s'): # rbStatus == "1":
-            
-            # # 異常ランプをOFFにする
-            # sendMC = "02FF00044D20000000C8010000" 
-            # writeData(sendMC)
+        # 1 -> 0に切り替わったタイミングで録画開始
+        if rbStatus_old == "0" and rbStatus == "1" and not recording:# key == ord('s'): # 
+            # 異常ランプをOFFにする
+            sendMC = "02FF00044D20000000C8010000" 
+            writeData(sendMC)
 
-            # print("productNo:", productNo)
-            recording = not recording  # 録画の開始/停止をトグル
-            if recording:
-                print("Recording started...")
-            else:
-                print("Recording stopped.")
-                break
-        
+            recording = True
+            print("recording started...")
+
+        # 1 -> 0に切り替わったタイミングで録画停止
+        elif rbStatus_old == "1" and rbStatus == "0" and recording:
+            recording = False
+            print("recording stopped...")  
+            break 
+
         # 録画中の場合、フレームを書き込む
         if recording:
             out.write(frame)
 
-        # if key == ord("q"):
-        #     break
 
+        # rbStatusを更新
+        rbStatus_old = rbStatus
 
     # リソースの解放
     cap.release()

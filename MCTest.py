@@ -55,6 +55,7 @@ def writeData(sendMC:str) -> tuple[str, str]:
 #"""
 
 def readData(sendMC:str) -> tuple[str, str]:
+    
     HOST = '192.168.1.250'  #通信相手機器のIPアドレス設定
     PORT = 1100             #使用ポートの設定
     client = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  #通信用オブジェクトの取得
@@ -69,19 +70,23 @@ def readData(sendMC:str) -> tuple[str, str]:
     #print(respData)                                             #返信の確認
     comStatus = respData[2:4]                                   #終了コード取出し
 
+
+    # print(comStatus)
     if comStatus == "00":                                       #正常終了であれば
         rbStatus = respData[11:12]                                #ロボットの状態取得
         productCode = respData[6:7] + respData[5:6] + respData[4:5]
 
         productNumber = str(int(productCode, 2))                #品番取得
-        print(rbStatus)
-        print(productNumber)
+        # print(rbStatus)
+        # print(productNumber)
+        return rbStatus, productNumber
+    
     elif comStatus == "5B":                                     #異常終了であれば
         anomalousCode = response[4:6]
         
         return comStatus, anomalousCode                         #異常コード
     
-    return rbStatus, productNumber
+    
 
 def main():
     res = True

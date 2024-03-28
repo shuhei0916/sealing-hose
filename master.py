@@ -73,10 +73,11 @@ def main():
         if mu["m00"] != 0:
             x,y = int(mu["m10"]/mu["m00"]) , int(mu["m01"]/mu["m00"])
             # 軌跡を保存するためのコードをここに追加
+            tracks.append((x, y))
         else:
             print("No object found")  # 追跡対象が見つからない場合の処理
             # 必要に応じて、追跡対象が見つからない状態を処理するコードをここに追加
-        tracks.append((x, y))
+        # tracks.append((x, y))
         # tracksの長さがtrack_lenより大きい場合、最も古い要素を削除
         if len(tracks) > int(settings["track_length"]):
             tracks.pop(0)
