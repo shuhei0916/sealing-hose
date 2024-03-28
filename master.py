@@ -1,6 +1,6 @@
 """
 masterのTODO:
-
+    軌跡保存部分を関数化
 """
 
 from color_extract import hsv_mask
@@ -15,8 +15,13 @@ import datetime
 
 
 def main():
-    target_color = [44, 154, 84] # green
+    target_color = [31, 127, 37]
     
+    # [173, 233, 73] 
+    # [247, 243, 179] 
+    # [31, 127, 37] # green
+    # [44, 154, 84] # green_old
+
     # 設定ファイルの読み込み
     settings = get_config()
 
@@ -56,6 +61,15 @@ def main():
     
     cap = cv2.VideoCapture(input_vid)
 
+    # 入力動画からフレームレートとフレームサイズを取得
+    fps = 30 #cap.get(cv2.CAP_PROP_FPS)
+    frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+
+    # VideoWriterオブジェクトを作成
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # 'mp4v'はMP4形式のコーデック
+    out = cv2.VideoWriter('./data/0328yellow2.mp4', fourcc, fps, (frame_width, frame_height))
+
     tracks = []
     counter = 0
     
@@ -74,34 +88,39 @@ def main():
             x,y = int(mu["m10"]/mu["m00"]) , int(mu["m01"]/mu["m00"])
             # 軌跡を保存するためのコードをここに追加
             tracks.append((x, y))
+
         else:
             print("No object found")  # 追跡対象が見つからない場合の処理
             # 必要に応じて、追跡対象が見つからない状態を処理するコードをここに追加
-        # tracks.append((x, y))
         # tracksの長さがtrack_lenより大きい場合、最も古い要素を削除
         if len(tracks) > int(settings["track_length"]):
             tracks.pop(0)
         
+
+        # track_frame = np.empty_like(res)
         # track_lenの長さだけ軌跡を描画するよう変更予定
         for i in range(1, len(tracks)):
             if tracks[i - 1] is None or tracks[i] is None:
                 continue
-            cv2.line(res, tracks[i - 1], tracks[i], (255, 255, 0), int(settings["track_thickness"])) # resに書き込むのではなく、新しい画像に軌跡のみを描画するように変更予定
+            cv2.line(res, tracks[i - 1], tracks[i], (255, 255, 0), int(settings["track_thickness"]))
 
         
         # ndarrayの形で保存
         outname = os.path.join(output_dir, 'master' + str(counter))
         np.save(outname, res)
         
-        # cv2.imshow('Frame', frame)
-        cv2.imshow('HSV Mask', res)
 
-        if cv2.waitKey(5) & 0xFF == 27:
+        # combined = cv2.add(frame, track_frame)
+        # cv2.imshow('Frame', frame)
+        cv2.imshow('master',res)
+        out.write(res)
+
+        if cv2.waitKey(1) & 0xFF == 27:
             break
 
         counter += 1
-        
     cap.release()
+    out.release()
     cv2.destroyAllWindows()
     
 

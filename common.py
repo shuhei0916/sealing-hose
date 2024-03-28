@@ -3,6 +3,7 @@
 import sys
 import os
 from datetime import datetime
+import time
 
 mess = "Data integrity check failed. Please contact your system administrator for assistance."
 
@@ -95,6 +96,7 @@ def confirm_consistency():
         return True
     else:
         print(mess)
+        time.sleep(10)
         return False
 
 

@@ -86,7 +86,7 @@ def vid_cap(save_directory, vid_name):
         cv2.putText(frame, text, (10, 10), cv2.FONT_HERSHEY_PLAIN, fontScale=1, color=(0, 0, 255), thickness=1)
         
         # フレームの表示
-        cv2.imshow("title", frame)
+        cv2.imshow("vid_cap", frame)
         key = cv2.waitKey(1) & 0xFF
 
         # 1 -> 0に切り替わったタイミングで録画開始
@@ -108,6 +108,10 @@ def vid_cap(save_directory, vid_name):
         if recording:
             out.write(frame)
 
+        if cv2.waitKey(1) & 0xFF == 27:
+            break
+
+        
 
         # rbStatusを更新
         rbStatus_old = rbStatus
