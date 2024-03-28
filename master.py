@@ -28,6 +28,10 @@ def main():
     # カレントディレクトリの取得
     exe_path = getexepath()
 
+    while True:
+        print("hehe")
+        # print(exe_path)
+
     # 録画したデータを保存するディレクトリを指定
     input_dir = os.path.join(exe_path, 'master_data', 'raw_video')
 
