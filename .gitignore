@@ -1,7 +1,4 @@
 # dataとOthersを無視
 data/
-Others/
-
-master_data/
-test_data/
-build/
+.venv/
+_pycache_
