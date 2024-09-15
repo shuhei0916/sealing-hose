@@ -7,7 +7,6 @@ def calc_diff(img1_path, img2_path):
 
     im_diff = img1.astype(int) - img2.astype(int)
     im_diff_abs = np.abs(im_diff)
-    print(f'{im_diff_abs=}')
     
     return im_diff_abs
 
