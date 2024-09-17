@@ -1,4 +1,4 @@
 # dataとOthersを無視
 data/
 .venv/
-_pycache_
+__pycache__/
