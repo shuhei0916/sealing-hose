@@ -11,7 +11,15 @@ class TestImgDiffDetector(unittest.TestCase):
         im = cv2.imread(img_path)
         expected = np.zeros_like(im)
         
-        self.assertTrue(np.array_equal(actual, expected), "The images should be identical.")
+        self.assertTrue(np.array_equal(actual, expected), 'The images should be identical.')\
+            
+    def test_different_images(self):
+        img_path1 = 'data/lena.jpg'
+        img_path2 = 'data/lena_q25.jpg'
+        actual = dd.calc_diff(img_path1, img_path2)
+
+        self.assertTrue(np.any(actual > 0), 'The images should have differences.')
+
 
 
 if __name__ == '__main__':
