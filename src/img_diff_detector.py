@@ -1,6 +1,7 @@
 import cv2
 import numpy as np
 
+# calc_diffを実装したが、cv2にはabsdiff()関数がすでにあるのでそちらを使った方がよいかも
 def calc_diff(img1_path, img2_path):
     img1 = cv2.imread(img1_path)
     img2 = cv2.imread(img2_path)
