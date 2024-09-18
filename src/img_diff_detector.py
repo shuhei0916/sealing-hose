@@ -12,9 +12,12 @@ def calc_diff(img1_path, img2_path):
 
 
 def main():
-    im= cv2.imread('data/saizeriya1.jpg')
-    print(im.shape)
-    print(im.dtype)
+    im1 = cv2.imread('data/lena.jpg')
+    im2 = cv2.imread('data/lena_q25.jpg')
+    
+    im_diff = calc_diff('data/lena.jpg', 'data/lena_q25.jpg')
+    cv2.imwrite('data/dst/lena_diff.jpg', im_diff)
+    
 
 if __name__ == '__main__':
     main()
