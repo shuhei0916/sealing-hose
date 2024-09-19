@@ -3,11 +3,30 @@ import numpy as np
 
 
 def main():
-    im1 = cv2.imread('data/lena.jpg')
-    im2 = cv2.imread('data/lena_q25.jpg')
+    video_path = 'data/vtest.avi'
+    cap = cv2.VideoCapture(video_path)
+
+    ret, frame1 = cap.read()
+    frame1_gray = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
     
-    im_diff = cv2.absdiff(im1, im2)
-    cv2.imwrite('data/dst/lena_diff.jpg', im_diff)
+    while cap.isOpened():
+        ret, frame2 = cap.read()
+        if not ret:
+            break
+        
+        frame2_gray = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
+        diff = cv2.absdiff(frame1_gray, frame2_gray)
+        
+        cv2.imshow('Motion Detection', diff)
+        
+        frame1_gray = frame2_gray
+        
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+        
+    cv2.destroyWindow('hoge')
+        
+        
     
 
 if __name__ == '__main__':

@@ -1,7 +1,6 @@
 import unittest
 import numpy as np
 import cv2
-import src.img_diff_detector as dd
 
 class TestImgDiffDetector(unittest.TestCase):
     def setUp(self):
