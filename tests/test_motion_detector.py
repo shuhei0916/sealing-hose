@@ -2,7 +2,7 @@ import unittest
 import numpy as np
 import cv2
 
-class TestImgDiffDetector(unittest.TestCase):
+class TestAbsDiff(unittest.TestCase):
     def setUp(self):
         self.img1 = cv2.imread('data/lena.jpg')
         self.img2 = cv2.imread('data/lena_q25.jpg')
