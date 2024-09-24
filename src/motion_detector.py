@@ -10,8 +10,8 @@ def get_video_properties(cap):
 
 
 def main():
-    video_path = 'data/vtest.avi'
-    output_path = 'data/dst/output_motion_detection.avi'
+    video_path = 'data/vtest_10sec.mp4'
+    output_path = 'data/dst/out_10sec.mp4'
     
     cap = cv2.VideoCapture(video_path)
     
