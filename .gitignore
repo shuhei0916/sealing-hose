@@ -1,4 +1,3 @@
-# dataとOthersを無視
 data/
 .venv/
 __pycache__/
