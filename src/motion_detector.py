@@ -11,13 +11,13 @@ def get_video_properties(cap):
 
 def main():
     video_path = 'data/vtest_10sec.mp4'
-    output_path = 'data/dst/thresh_10sec.mp4'
+    output_path = 'data/dst/dilated_10sec.mp4'
     
     cap = cv2.VideoCapture(video_path)
     
     fps, frame_width, frame_height = get_video_properties(cap)    
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height), isColor=False)
+    out = cv2.VideoWriter(output_path,  fourcc, fps, (frame_width, frame_height), isColor=False)
 
     ret, frame1 = cap.read()
     frame1_gray = cv2.cvtColor(frame1, cv2.COLOR_BGR2GRAY)
@@ -30,16 +30,15 @@ def main():
         frame2_gray = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
         diff = cv2.absdiff(frame1_gray, frame2_gray)
         
-        
         # 動きのある領域を強調するために閾値処理を適用
-        _, thresh = cv2.threshold(diff, 25, 255, cv2.THRESH_BINARY)
+        _, thresh = cv2.threshold(diff, 90, 255, cv2.THRESH_BINARY)
 
         # 差分を膨張させて小さなノイズを除去（モルフォロジー変換）
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (5, 5))
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
         dilated = cv2.dilate(thresh, kernel, iterations=2) 
         
-        cv2.imshow('Motion Detection', thresh)
-        out.write(thresh)
+        cv2.imshow('Motion Detection', dilated)
+        out.write(dilated)
         
         frame1_gray = frame2_gray
         if cv2.waitKey(1) & 0xFF == ord('q'):
