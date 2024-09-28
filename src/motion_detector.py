@@ -21,6 +21,7 @@ def process_frame(frame1_gray, frame2_gray):
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
     dilated = cv2.dilate(thresh, kernel, iterations=2)
     
+    # return diff
     return dilated
 
 
@@ -35,8 +36,8 @@ def draw_contours(frame, contours):
 
 
 def main():
-    video_path = 'data/vtest_10sec.mp4'
-    output_path = 'data/dst/contour_10sec.mp4'
+    video_path = 'data/Rb.mp4'
+    output_path = 'data/dst/Rb_contour.mp4'
     
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
