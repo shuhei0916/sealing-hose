@@ -31,13 +31,13 @@ def draw_contours(frame, contours):
         area = cv2.contourArea(contour)
         if area > 200:
             x, y, w, h = cv2.boundingRect(contour)
-            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 122, 0), cv2.LINE_4)
+            cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 5, cv2.LINE_4)
     return frame
 
 
 def main():
     video_path = 'data/Rb.mp4'
-    output_path = 'data/dst/Rb_contour.mp4'
+    output_path = 'data/dst/Rb.mp4'
     
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
@@ -75,8 +75,8 @@ def main():
         frame_with_contours = draw_contours(frame2.copy(), contours)
         
         # 結果を表示し、保存する
-        cv2.imshow('Motion Detection', frame_with_contours)
-        out.write(frame_with_contours)
+        # cv2.imshow('Motion Detection', frame_with_contours)
+        out.write(frame2)
 
         # 次のフレームを処理するために更新
         frame1_gray = frame2_gray
