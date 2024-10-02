@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import Mock
 import numpy as np
 import cv2
-from src import motion_detector as md
+from src.common import get_video_properties
 
 class TestAbsDiff(unittest.TestCase):
     def setUp(self):
@@ -26,7 +26,7 @@ class TestMotionDetector(unittest.TestCase):
         cap = Mock()
         cap.get.side_effect = [30.0, 1920, 1080]
 
-        fps, frame_width, frame_height = md.get_video_properties(cap)
+        fps, frame_width, frame_height = get_video_properties(cap)
 
         self.assertEqual(fps, 30.0)
         self.assertEqual(frame_width, 1920)
