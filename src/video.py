@@ -165,7 +165,8 @@ presets = dict(
 
 
 def create_capture(source = 0, fallback = presets['chess']):
-    '''source: <int> or '<int>|<filename>|synth [:<param_name>=<value> [:...]]'
+    '''source: <int> or '<int>|<fi
+    me>|synth [:<param_name>=<value> [:...]]'
     '''
     source = str(source).strip()
 
