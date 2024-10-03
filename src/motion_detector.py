@@ -4,8 +4,8 @@ from common import get_video_properties, process_frame, draw_contours
 
 
 def main():
-    video_path = 'data/Rb.mp4'
-    output_path = 'data/dst/Rb.mp4'
+    video_path = 'data/gr1.avi'
+    output_path = 'data/dst/gr1.mp4'
     
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():

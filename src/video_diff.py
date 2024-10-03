@@ -36,8 +36,8 @@ def display_video_difference(video_path1, video_path2):
 
 
 if __name__ == '__main__':
-    video_path1 = 'data/video1.mp4'
-    video_path2 = 'data/video2.mp4'
+    video_path1 = 'data/gr2_crop1.mp4'
+    video_path2 = 'data/gr2_crop2.mp4'
     
     # 二つの動画の差分を表示
     display_video_difference(video_path1, video_path2)
