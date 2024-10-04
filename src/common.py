@@ -18,26 +18,55 @@ def draw_contours(frame, contours):
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 5, cv2.LINE_4)
     return frame
 
-def create_test_video(output_path, fps=30, width=640, height=480, duration=5):
-    # 動画の作成
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter(output_path, fourcc, fps, (width, height))
-    
-    for _ in range(fps * duration):  # フレーム数 = fps * duration
-        # 正常なフレームを生成（ランダムな色の背景）
-        frame = np.random.randint(0, 256, (height, width, 3), dtype=np.uint8)
-        
-        # ある確率で異常なフレームを挿入
-        if np.random.rand() > 0.95:
-            # 異常なフレーム（黒い矩形を入れる）
-            cv2.rectangle(frame, (100, 100), (300, 300), (0, 0, 0), -1)
-        
-        out.write(frame)
-    
-    out.release()
-    
-def main():
-    print("hoge")
 
+def create_test_video_with_doodles(input_video_path, output_video_path, doodle_probability=0.05):
+    # 動画を読み込む
+    cap = cv2.VideoCapture(input_video_path)
+    
+    if not cap.isOpened():
+        print(f"Error: Could not open video {input_video_path}")
+        return
+    
+    # # 動画のプロパティを取得
+    # fps = int(cap.get(cv2.CAP_PROP_FPS))
+    # frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    # frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    fps, frame_width, frame_height = get_video_properties(cap)
+    
+    # 出力動画の設定
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')
+    out = cv2.VideoWriter(output_video_path, fourcc, fps, (frame_width, frame_height), isColor=True)
+    
+    while cap.isOpened():
+        ret, frame = cap.read()
+        
+        if not ret:
+            break
+        
+        # ランダムな確率で落書きを挿入
+        if np.random.rand() < doodle_probability:
+            # 落書き：ランダムな位置に矩形を描く
+            x1, y1 = np.random.randint(0, frame_width//2), np.random.randint(0, frame_height//2)
+            x2, y2 = np.random.randint(frame_width//2, frame_width), np.random.randint(frame_height//2, frame_height)
+            color = (np.random.randint(0, 256), np.random.randint(0, 256), np.random.randint(0, 256))  # ランダムな色
+            thickness = np.random.randint(2, 6)  # ランダムな厚さ
+            cv2.rectangle(frame, (x1, y1), (x2, y2), color, thickness)
+        
+        # フレームを書き込む
+        out.write(frame)
+        cv2.imshow('Difference between Videos', frame)
+                
+        if cv2.waitKey(30) & 0xFF == ord('q'):
+            break
+
+    cap.release()
+    out.release()
+    print(f"Video with doodles saved to {output_video_path}")
+
+def main():
+    input_video_path = 'data/vtest.avi'  # 既存の動画ファイルパス
+    output_video_path = 'data/dst/vtest_with_doodles.mp4'  # 出力先の動画ファイルパス
+    create_test_video_with_doodles(input_video_path, output_video_path)
+    
 if __name__ == '__main__':
     main()
