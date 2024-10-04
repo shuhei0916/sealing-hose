@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from common import get_video_properties, process_frame, draw_contours
+from common import get_video_properties, draw_contours
 
 
 def main():
@@ -12,14 +12,11 @@ def main():
         print("Error: Could not open video.")
         return
     
-    # ビデオのプロパティを取得
     fps, frame_width, frame_height = get_video_properties(cap)
     
-    # 出力先の設定（グレースケールで保存）
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height), isColor=True)
 
-    # 最初のフレームを取得
     ret, frame1 = cap.read()
     if not ret:
         print("Error: Could not read video frame.")
@@ -33,7 +30,6 @@ def main():
 
         frame2_gray = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
         
-        # dilated = process_frame(frame1_gray, frame2_gray)
         diff = cv2.absdiff(frame1_gray, frame2_gray)
         
         _, thresh = cv2.threshold(diff, 90, 255, cv2.THRESH_BINARY)
@@ -53,7 +49,6 @@ def main():
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
-    # 後処理
     cap.release()
     out.release()
     cv2.destroyAllWindows()
