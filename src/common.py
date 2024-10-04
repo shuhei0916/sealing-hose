@@ -27,10 +27,6 @@ def create_test_video_with_doodles(input_video_path, output_video_path, doodle_p
         print(f"Error: Could not open video {input_video_path}")
         return
     
-    # # 動画のプロパティを取得
-    # fps = int(cap.get(cv2.CAP_PROP_FPS))
-    # frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
-    # frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     fps, frame_width, frame_height = get_video_properties(cap)
     
     # 出力動画の設定
