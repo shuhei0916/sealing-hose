@@ -4,8 +4,8 @@ from common import get_video_properties, process_frame, draw_contours
 
 
 def main():
-    video_path = 'data/gr1.avi'
-    output_path = 'data/dst/gr1.mp4'
+    video_path = 'data/vtest.avi'
+    output_path = 'data/dst/vtest_processed.mp4'
     
     cap = cv2.VideoCapture(video_path)
     if not cap.isOpened():
@@ -33,23 +33,23 @@ def main():
 
         frame2_gray = cv2.cvtColor(frame2, cv2.COLOR_BGR2GRAY)
         
-        # 差分処理と膨張処理を行う
-        dilated = process_frame(frame1_gray, frame2_gray)
+        # dilated = process_frame(frame1_gray, frame2_gray)
+        diff = cv2.absdiff(frame1_gray, frame2_gray)
         
-        # 輪郭を抽出
+        _, thresh = cv2.threshold(diff, 90, 255, cv2.THRESH_BINARY)
+
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
+        dilated = cv2.dilate(thresh, kernel, iterations=2)
+        
         contours, _ = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-        # フレームに輪郭を描画
         frame_with_contours = draw_contours(frame2.copy(), contours)
         
-        # 結果を表示し、保存する
-        # cv2.imshow('Motion Detection', frame_with_contours)
-        out.write(frame2)
+        cv2.imshow('Motion Detection', diff)
+        # out.write(frame2)
 
-        # 次のフレームを処理するために更新
         frame1_gray = frame2_gray
         
-        # 'q'キーで終了
         if cv2.waitKey(1) & 0xFF == ord('q'):
             break
 
