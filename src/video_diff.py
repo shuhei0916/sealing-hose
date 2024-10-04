@@ -39,7 +39,7 @@ def display_video_difference(video_path1, video_path2, output_path):
         
         # TOOD: このロジックに対する自動テスト書く
         diff_ratio = np.sum(dilated) / (frame_width * frame_height)
-        if diff_ratio > 1500: # NOTE: jこの閾値は今後調整する
+        if diff_ratio > 1500: # NOTE: この閾値は今後調整する
             print('Anomaly detected!')
         
         cv2.imshow('Difference between Videos', diff)
