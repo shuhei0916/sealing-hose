@@ -43,7 +43,7 @@ def display_video_difference(video_path1, video_path2, output_path):
             print('Anomaly detected!')
         
         cv2.imshow('Difference between Videos', diff)
-        # out.write(diff)
+        out.write(diff)
         
         if cv2.waitKey(30) & 0xFF == ord('q'):
             break
