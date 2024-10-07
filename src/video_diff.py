@@ -1,8 +1,8 @@
 import cv2
 import numpy as np
-from common import get_video_properties
+from common import get_video_properties, draw_contours
 
-def display_video_difference(video_path1, video_path2, output_path):
+def display_video_difference(video_path1, video_path2, output_path1, output_path2):
     cap1 = cv2.VideoCapture(video_path1)
     cap2 = cv2.VideoCapture(video_path2)
     
@@ -13,7 +13,8 @@ def display_video_difference(video_path1, video_path2, output_path):
     fps, frame_width, frame_height = get_video_properties(cap1)
     
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height), isColor=False)
+    out1 = cv2.VideoWriter(output_path1, fourcc, fps, (frame_width, frame_height), isColor=False)
+    out2 = cv2.VideoWriter(output_path2, fourcc, fps, (frame_width, frame_height), isColor=True)
 
     
     while cap1.isOpened() and cap2.isOpened():
@@ -36,14 +37,21 @@ def display_video_difference(video_path1, video_path2, output_path):
         
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
         dilated = cv2.dilate(thresh, kernel, iterations=2)
+        contours, _ = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        
+        frame_with_contours = draw_contours(frame2.copy(), contours)
+        
         
         # TOOD: このロジックに対する自動テスト書く
         diff_ratio = np.sum(dilated) / (frame_width * frame_height)
-        if diff_ratio > 1500: # NOTE: この閾値は今後調整する
-            print('Anomaly detected!')
+        # if diff_ratio > 1500: # NOTE: この閾値は今後調整する
+        #     print('Anomaly detected!')
+
         
         cv2.imshow('Difference between Videos', diff)
-        out.write(diff)
+        
+        out1.write(diff)
+        out2.write(frame_with_contours)
         
         if cv2.waitKey(30) & 0xFF == ord('q'):
             break
@@ -56,9 +64,11 @@ def display_video_difference(video_path1, video_path2, output_path):
 
 
 if __name__ == '__main__': 
-    video_path1 = 'data/Megamind.avi'
-    video_path2 = 'data/Megamind_bugy.avi'
-    output_path = 'data/dst/Megamind_diff.mp4'
+    video_path1 = 'data/gr1_crop1m.mp4'
+    video_path2 = 'data/gr1_crop2m.mp4'
+    output_path1 = 'data/dst/gr1_diff.mp4'
+    output_path2 = 'data/dst/gr1_diff_contour.mp4'
+    
     
     # 二つの動画の差分を表示
-    display_video_difference(video_path1, video_path2, output_path)
+    display_video_difference(video_path1, video_path2, output_path1, output_path2)
