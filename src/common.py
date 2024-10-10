@@ -19,7 +19,7 @@ def draw_contours(frame, contours):
     return frame
 
 
-def create_test_video_with_doodles(input_video_path, output_video_path, doodle_probability=0.05):
+def create_test_video(input_video_path, output_video_path, doodle_probability=0.05):
     # 動画を読み込む
     cap = cv2.VideoCapture(input_video_path)
     
@@ -33,6 +33,7 @@ def create_test_video_with_doodles(input_video_path, output_video_path, doodle_p
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     out = cv2.VideoWriter(output_video_path, fourcc, fps, (frame_width, frame_height), isColor=True)
     
+    abnormal_frame_count = 0
     while cap.isOpened():
         ret, frame = cap.read()
         
@@ -41,6 +42,7 @@ def create_test_video_with_doodles(input_video_path, output_video_path, doodle_p
         
         # ランダムな確率で落書きを挿入
         if np.random.rand() < doodle_probability:
+            abnormal_frame_count += 1
             # 落書き：ランダムな位置に矩形を描く
             x1, y1 = np.random.randint(0, frame_width//2), np.random.randint(0, frame_height//2)
             x2, y2 = np.random.randint(frame_width//2, frame_width), np.random.randint(frame_height//2, frame_height)
@@ -58,11 +60,14 @@ def create_test_video_with_doodles(input_video_path, output_video_path, doodle_p
     cap.release()
     out.release()
     print(f"Video with doodles saved to {output_video_path}")
+    print(f"Total abnormal frames: {abnormal_frame_count}")
+    # return abnormal_frame_count
 
 def main():
     input_video_path = 'data/vtest.avi'  # 既存の動画ファイルパス
     output_video_path = 'data/dst/vtest_with_doodles.mp4'  # 出力先の動画ファイルパス
-    create_test_video_with_doodles(input_video_path, output_video_path)
+    create_test_video(input_video_path, output_video_path)
+    # print(abnormal_frame_count)
     
 if __name__ == '__main__':
     main()
