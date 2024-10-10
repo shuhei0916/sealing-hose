@@ -16,6 +16,8 @@ def display_video_difference(video_path1, video_path2, output_path1, output_path
     out1 = cv2.VideoWriter(output_path1, fourcc, fps, (frame_width, frame_height), isColor=False)
     out2 = cv2.VideoWriter(output_path2, fourcc, fps, (frame_width, frame_height), isColor=True)
 
+    abnormal_frame_count = 0
+    threshold_sum = 1e6
     
     while cap1.isOpened() and cap2.isOpened():
         ret1, frame1 = cap1.read()
@@ -32,6 +34,11 @@ def display_video_difference(video_path1, video_path2, output_path1, output_path
             frame2_gray = cv2.resize(frame2_gray, (frame1_gray.shape[1], frame1_gray.shape[0]))
 
         diff = cv2.absdiff(frame1_gray, frame2_gray)
+        
+        diff_sum = np.sum(diff)
+
+        if diff_sum > threshold_sum:
+            abnormal_frame_count += 1
         
         _, thresh = cv2.threshold(diff, 90, 255, cv2.THRESH_BINARY)
         
@@ -61,13 +68,15 @@ def display_video_difference(video_path1, video_path2, output_path1, output_path
     cap1.release()
     cap2.release()
     cv2.destroyAllWindows()
+    
+    print(f"Total abnormal frames detected: {abnormal_frame_count}")
 
 
 if __name__ == '__main__': 
-    video_path1 = 'data/gr1_crop1m.mp4'
-    video_path2 = 'data/gr2_crop1_edited.mp4'
-    output_path1 = 'data/dst/gr_diff_1and2.mp4'
-    output_path2 = 'data/dst/gr_diff_1and2_contour.mp4'
+    video_path1 = 'data/vtest.avi'
+    video_path2 = 'data/dst/vtest_with_doodles.mp4'
+    output_path1 = 'data/dst/vtest_diff.mp4'
+    output_path2 = 'data/dst/vtest_diff_contours.mp4'
     
     
     # 二つの動画の差分を表示
