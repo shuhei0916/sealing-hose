@@ -42,15 +42,15 @@ def display_video_difference(video_path1, video_path2, output_path1, output_path
         
         _, thresh = cv2.threshold(diff, 90, 255, cv2.THRESH_BINARY)
         
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
-        dilated = cv2.dilate(thresh, kernel, iterations=2)
-        contours, _ = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        # kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
+        # dilated = cv2.dilate(thresh, kernel, iterations=2)
+        # contours, _ = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         
-        frame_with_contours = draw_contours(frame2.copy(), contours)
+        # frame_with_contours = draw_contours(frame2.copy(), contours)
         
         
         # TOOD: このロジックに対する自動テスト書く
-        diff_ratio = np.sum(dilated) / (frame_width * frame_height)
+        # diff_ratio = np.sum(dilated) / (frame_width * frame_height)
         # if diff_ratio > 1500: # NOTE: この閾値は今後調整する
         #     print('Anomaly detected!')
 
@@ -58,7 +58,7 @@ def display_video_difference(video_path1, video_path2, output_path1, output_path
         cv2.imshow('Difference between Videos', diff)
         
         out1.write(diff)
-        out2.write(frame_with_contours)
+        # out2.write(frame_with_contours)
         
         if cv2.waitKey(30) & 0xFF == ord('q'):
             break
@@ -73,11 +73,11 @@ def display_video_difference(video_path1, video_path2, output_path1, output_path
 
 
 if __name__ == '__main__': 
-    video_path1 = 'data/vtest.avi'
-    video_path2 = 'data/dst/vtest_with_doodles.mp4'
+    master_video_path = 'data/vtest.avi'
+    test_video_path = 'data/dst/vtest_with_doodles.mp4'
     output_path1 = 'data/dst/vtest_diff.mp4'
     output_path2 = 'data/dst/vtest_diff_contours.mp4'
     
     
     # 二つの動画の差分を表示
-    display_video_difference(video_path1, video_path2, output_path1, output_path2)
+    display_video_difference(master_video_path, test_video_path, output_path1, output_path2)
