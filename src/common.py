@@ -8,8 +8,17 @@ def get_video_properties(cap):
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     return fps, frame_width, frame_height
 
+def draw_contours(frame, contours, min_area=200):
+    """輪郭が一定面積以上の場合、その輪郭を描画する"""
+    for contour in contours:
+        area = cv2.contourArea(contour)
+        if area > min_area:
+            # 輪郭をそのまま描画する（色: 緑、線の太さ: 5）
+            cv2.drawContours(frame, [contour], -1, (0, 255, 0), 5)
+    return frame
 
-def draw_contours(frame, contours):
+
+def draw_contours2(frame, contours):
     """輪郭に矩形を描画する"""
     for contour in contours:
         area = cv2.contourArea(contour)

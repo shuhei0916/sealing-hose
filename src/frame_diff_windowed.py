@@ -32,7 +32,6 @@ def display_video_difference_with_window(video_path1, video_path2, output_path1,
     out2 = cv2.VideoWriter(output_path2, fourcc, fps, (frame_width, frame_height), isColor=True)
 
     abnormal_frame_count = 0
-    threshold_sum = 1e6
     master_frames = []
     
     while cap1.isOpened() and cap2.isOpened():
@@ -55,10 +54,6 @@ def display_video_difference_with_window(video_path1, video_path2, output_path1,
             best_master_frame_gray = cv2.cvtColor(best_master_frame, cv2.COLOR_BGR2GRAY)
             diff = cv2.absdiff(test_frame_gray, best_master_frame_gray)
             
-            diff_sum = np.sum(diff)
-            if diff_sum > threshold_sum:
-                abnormal_frame_count += 1
-
             _, thresh = cv2.threshold(diff, 90, 255, cv2.THRESH_BINARY)
             
             kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
@@ -68,9 +63,9 @@ def display_video_difference_with_window(video_path1, video_path2, output_path1,
             frame_with_contours = draw_contours(test_frame.copy(), contours)
             
             out1.write(diff)
-            cv2.imshow('Difference between Videos', diff)
             
-            # out2.write(frame_with_contours)
+            out2.write(frame_with_contours)
+            cv2.imshow('Difference between Videos', frame_with_contours)
         
         if cv2.waitKey(30) & 0xFF == ord('q'):
             break

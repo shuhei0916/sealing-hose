@@ -41,8 +41,8 @@ def main():
 
         frame_with_contours = draw_contours(frame2.copy(), contours)
         
-        cv2.imshow('Motion Detection', diff)
-        # out.write(frame2)
+        cv2.imshow('Motion Detection', frame_with_contours)
+        out.write(frame_with_contours)
 
         frame1_gray = frame2_gray
         
