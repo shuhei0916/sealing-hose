@@ -11,7 +11,7 @@ def detect_motion(video_path, output_path):
     fps, frame_width, frame_height = get_video_properties(cap)
     
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    output_video_writer = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height), isColor=True)
+    output_video_writer = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height), isColor=False)
 
     ret, prev_frame = cap.read()
     if not ret:
@@ -28,12 +28,20 @@ def detect_motion(video_path, output_path):
         
         motion_diff = cv2.absdiff(frame1_gray, frame2_gray)
         
-        motion_contours = find_contours(motion_diff)
+        _, thresh = cv2.threshold(motion_diff, 90, 255, cv2.THRESH_BINARY)
+
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
+        dilated = cv2.dilate(thresh, kernel, iterations=2)
         
-        frame_with_contours = draw_contours(current_frame.copy(), motion_contours)
+        # motion_contours = find_contours(motion_diff)
         
-        cv2.imshow('Motion Detection', frame_with_contours)
-        output_video_writer.write(frame_with_contours)
+        # frame_with_contours = draw_contours(current_frame.copy(), motion_contours)
+        
+        
+
+        
+        cv2.imshow('Motion Detection', dilated) 
+        # output_video_writer.write(frame_with_contours)
 
         frame1_gray = frame2_gray
         

@@ -19,7 +19,6 @@ def find_contours(motion_diff, threshold_value=90):
     return motion_contours
 
 def draw_contours(frame, contours, min_area=200):
-    """輪郭が一定面積以上の場合、その輪郭を描画する"""
     for contour in contours:
         area = cv2.contourArea(contour)
         if area > min_area:
@@ -28,8 +27,7 @@ def draw_contours(frame, contours, min_area=200):
     return frame
 
 
-def draw_contours2(frame, contours):
-    """輪郭に矩形を描画する"""
+def draw_contours_with_rectangle(frame, contours):
     for contour in contours:
         area = cv2.contourArea(contour)
         if area > 200:
