@@ -1,16 +1,6 @@
 import cv2
 import numpy as np
-from common import get_video_properties, draw_contours
-
-def find_contours(motion_diff, threshold_value=90):
-    _, thresh = cv2.threshold(motion_diff, threshold_value, 255, cv2.THRESH_BINARY)
-    
-    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
-    dilated = cv2.dilate(thresh, kernel, iterations=2)
-    
-    motion_contours, _ = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    
-    return motion_contours
+from common import get_video_properties, draw_contours, find_contours
 
 def detect_motion(video_path, output_path):
     cap = cv2.VideoCapture(video_path)

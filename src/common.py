@@ -8,6 +8,16 @@ def get_video_properties(cap):
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     return fps, frame_width, frame_height
 
+def find_contours(motion_diff, threshold_value=90):
+    _, thresh = cv2.threshold(motion_diff, threshold_value, 255, cv2.THRESH_BINARY)
+    
+    kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
+    dilated = cv2.dilate(thresh, kernel, iterations=2)
+    
+    motion_contours, _ = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    
+    return motion_contours
+
 def draw_contours(frame, contours, min_area=200):
     """輪郭が一定面積以上の場合、その輪郭を描画する"""
     for contour in contours:
