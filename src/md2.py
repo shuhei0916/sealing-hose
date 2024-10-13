@@ -37,7 +37,7 @@ def main():
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         
         # 背景モデルを更新（加重平均を使用）
-        cv2.accumulateWeighted(gray_frame, avg_frame, 0.01)
+        cv2.accumulateWeighted(gray_frame, avg_frame, 0.10)
         background = cv2.convertScaleAbs(avg_frame)
 
         # 背景との差分を計算
@@ -46,15 +46,17 @@ def main():
         # 差分画像を二値化
         _, thresh = cv2.threshold(diff, 50, 255, cv2.THRESH_BINARY)
         
-        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
-        dilated = cv2.dilate(thresh, kernel, iterations=2)
+        # この2行不要なのでは？
+        # kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
+        # dilated = cv2.dilate(thresh, kernel, iterations=2)
+        
         contours, _ = cv2.findContours(thresh, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
         
         frame_with_contours = frame.copy()
         
         frame_with_contours = draw_contours(frame_with_contours, contours)
         
-        cv2.imshow('Motion Detection', frame_with_contours)
+        cv2.imshow('Motion Detection', thresh)
         out.write(frame_with_contours)
 
         if cv2.waitKey(30) & 0xFF == ord('q'):
