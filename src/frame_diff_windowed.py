@@ -28,8 +28,8 @@ def display_video_difference_with_window(video_path1, video_path2, output_path1,
     fps, frame_width, frame_height = get_video_properties(cap1)
     
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
-    out1 = cv2.VideoWriter(output_path1, fourcc, fps, (frame_width, frame_height), isColor=False)
-    out2 = cv2.VideoWriter(output_path2, fourcc, fps, (frame_width, frame_height), isColor=True)
+    diff_video_writer = cv2.VideoWriter(output_path1, fourcc, fps, (frame_width, frame_height), isColor=False)
+    contour_video_writer = cv2.VideoWriter(output_path2, fourcc, fps, (frame_width, frame_height), isColor=True)
 
     abnormal_frame_count = 0
     master_frames = []
@@ -62,9 +62,9 @@ def display_video_difference_with_window(video_path1, video_path2, output_path1,
             
             frame_with_contours = draw_contours(test_frame.copy(), contours)
             
-            out1.write(diff)
+            diff_video_writer.write(diff)
+            contour_video_writer.write(frame_with_contours)
             
-            out2.write(frame_with_contours)
             cv2.imshow('Difference between Videos', frame_with_contours)
         
         if cv2.waitKey(30) & 0xFF == ord('q'):

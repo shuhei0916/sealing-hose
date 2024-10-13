@@ -6,6 +6,6 @@
 - [ ] ヒストグラムを作成するとしたらどのようにするのが良いのかを検討する。
 - [ ] strategyパターンを利用してフレーム比較の方法を動的に切り替えるロジックを導入する。
 - [ ] thresh -> contoursあたりを適切に関数化する。
-- [ ] accumulateWeightedについて
+- [ ] accumulateWeightedについて調べる
 
 ## Other
