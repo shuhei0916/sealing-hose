@@ -21,7 +21,6 @@ def main():
     fourcc = cv2.VideoWriter_fourcc(*'mp4v')
     out = cv2.VideoWriter(output_path, fourcc, fps, (frame_width, frame_height), isColor=True)
 
-    # 背景モデル用の変数
     ret, frame = cap.read()
     if not ret:
         print("Error: Could not read video frame.")
@@ -56,7 +55,7 @@ def main():
         
         frame_with_contours = draw_contours(frame_with_contours, contours)
         
-        cv2.imshow('Motion Detection', thresh)
+        cv2.imshow('Motion Detection', )
         out.write(frame_with_contours)
 
         if cv2.waitKey(30) & 0xFF == ord('q'):

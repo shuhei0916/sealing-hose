@@ -59,7 +59,7 @@ def display_video_difference_with_window(video_path1, video_path2, output_path1,
             kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
             dilated = cv2.dilate(thresh, kernel, iterations=2)
             contours, _ = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-            
+                       
             frame_with_contours = draw_contours(test_frame.copy(), contours)
             
             diff_video_writer.write(diff)

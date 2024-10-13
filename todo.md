@@ -7,5 +7,6 @@
 - [ ] strategyパターンを利用してフレーム比較の方法を動的に切り替えるロジックを導入する。
 - [ ] thresh -> contoursあたりを適切に関数化する。
 - [ ] accumulateWeightedについて調べる
+- [ ] 背景差分についてもう少し調べる（https://labs.eecs.tottori-u.ac.jp/sd/Member/oyamada/OpenCV/html/py_tutorials/py_video/py_bg_subtraction/py_bg_subtraction.html#background-subtraction）
 
 ## Other

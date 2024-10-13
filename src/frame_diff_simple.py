@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from common import get_video_properties, draw_contours, find_contours
+from common import get_video_properties, draw_contours
 
 # NOTE: master->reference, test->targetのように改名したほうが良いかも
 def display_video_difference(master_video_path, test_video_path, diff_output_path, contour_output_path, window_size=30):
@@ -41,8 +41,12 @@ def display_video_difference(master_video_path, test_video_path, diff_output_pat
         if diff_sum > threshold_sum:
             abnormal_frame_count += 1
         
+        _, thresh = cv2.threshold(diff, 90, 255, cv2.THRESH_BINARY)
         
-                
+        kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
+        dilated = cv2.dilate(thresh, kernel, iterations=2)
+        contours, _ = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+        
         copy = test_frame.copy()
         for contour in contours:
             area = cv2.contourArea(contour)
