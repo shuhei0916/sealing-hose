@@ -10,3 +10,4 @@
 - [ ] 背景差分についてもう少し調べる（https://labs.eecs.tottori-u.ac.jp/sd/Member/oyamada/OpenCV/html/py_tutorials/py_video/py_bg_subtraction/py_bg_subtraction.html#background-subtraction）
 
 ## Other
+ - [ ] codeのextract methodのショートカットについて調べる。

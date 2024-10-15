@@ -18,7 +18,7 @@ def display_video_difference(master_video_path, test_video_path, diff_output_pat
     contour_video_writer = cv2.VideoWriter(contour_output_path, fourcc, fps, (frame_width, frame_height), isColor=True)
 
     abnormal_frame_count = 0
-    threshold_sum = 1e6
+    # threshold_sum = 1e6
     
     while cap1.isOpened() and cap2.isOpened():
         ret1, master_frame = cap1.read()
@@ -35,12 +35,7 @@ def display_video_difference(master_video_path, test_video_path, diff_output_pat
             test_frame_gray = cv2.resize(test_frame_gray, (master_frame_gray.shape[1], master_frame_gray.shape[0]))
 
         diff = cv2.absdiff(master_frame_gray, test_frame_gray)
-        
-        diff_sum = np.sum(diff)
-
-        if diff_sum > threshold_sum:
-            abnormal_frame_count += 1
-        
+               
         _, thresh = cv2.threshold(diff, 90, 255, cv2.THRESH_BINARY)
         
         kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
@@ -57,14 +52,11 @@ def display_video_difference(master_video_path, test_video_path, diff_output_pat
            
         # frame_with_contours = draw_contours(test_frame.copy(), contours)
         
-        
-        # TOOD: このロジックに対する自動テスト書く
-        # diff_ratio = np.sum(dilated) / (frame_width * frame_height)
-        # if diff_ratio > 1500: # NOTE: この閾値は今後調整する
-        #     print('Anomaly detected!')
+        diff_ratio = np.sum(dilated) / (frame_width * frame_height)
+        if diff_ratio > 0: 
+            abnormal_frame_count += 1
 
-        
-        cv2.imshow('Difference between Videos', copy)
+        cv2.imshow('Difference between Videos', dilated)
         
         # diff_video_writer.write(diff)
         # contour_video_writer.write(frame_with_contours)
@@ -72,8 +64,6 @@ def display_video_difference(master_video_path, test_video_path, diff_output_pat
         if cv2.waitKey(30) & 0xFF == ord('q'):
             break
         
-    # print(diff )
-    # print(diff.shape)
     cap1.release()
     cap2.release()
     cv2.destroyAllWindows()
