@@ -2,7 +2,6 @@ import cv2
 import numpy as np
 
 def get_video_properties(cap):
-    """ビデオファイルからフレームレート、幅、高さを取得する"""
     fps = cap.get(cv2.CAP_PROP_FPS)
     frame_width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     frame_height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
@@ -14,9 +13,9 @@ def find_contours(motion_diff, threshold_value=90):
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
     dilated = cv2.dilate(thresh, kernel, iterations=2)
     
-    motion_contours, _ = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    contours, _ = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     
-    return motion_contours
+    return contours
 
 def draw_contours(frame, contours, min_area=200):
     for contour in contours:
