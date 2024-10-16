@@ -48,9 +48,8 @@ def display_video_difference(master_video_path, test_video_path, diff_output_pat
             if area > 200:
                 x, y, w, h = cv2.boundingRect(contour)
                 cv2.rectangle(copy, (x, y), (x + w, y + h), (0, 255, 0), 5, cv2.LINE_4)
-                
-           
-        # frame_with_contours = draw_contours(test_frame.copy(), contours)
+                           
+        frame_with_contours = draw_contours(test_frame.copy(), contours)
         
         diff_ratio = np.sum(dilated) / (frame_width * frame_height)
         if diff_ratio > 0: 

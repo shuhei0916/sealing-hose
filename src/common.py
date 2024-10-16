@@ -14,7 +14,6 @@ def find_contours(motion_diff, threshold_value=90):
     dilated = cv2.dilate(thresh, kernel, iterations=2)
     
     contours, _ = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-    
     return contours
 
 def draw_contours(frame, contours, min_area=200):

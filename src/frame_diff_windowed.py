@@ -1,6 +1,6 @@
 import cv2
 import numpy as np
-from common import get_video_properties, draw_contours
+from common import get_video_properties, find_contours, draw_contours
 
 def find_best_matching_frame(frame, master_frames):
     min_diff_sum = float('inf')
@@ -54,12 +54,7 @@ def display_video_difference_with_window(video_path1, video_path2, output_path1,
             best_master_frame_gray = cv2.cvtColor(best_master_frame, cv2.COLOR_BGR2GRAY)
             diff = cv2.absdiff(test_frame_gray, best_master_frame_gray)
             
-            _, thresh = cv2.threshold(diff, 90, 255, cv2.THRESH_BINARY)
-            
-            kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
-            dilated = cv2.dilate(thresh, kernel, iterations=2)
-            contours, _ = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-                       
+            contours = find_contours(diff)            
             frame_with_contours = draw_contours(test_frame.copy(), contours)
             
             diff_video_writer.write(diff)
@@ -83,7 +78,5 @@ if __name__ == '__main__':
     diff_output_path = 'data/dst/gr1_diff_with_frames.mp4'
     contour_output_path = 'data/dst/gr1_diff_with_frames_contours.mp4'
     
-    
-    # 二つの動画の差分を表示
     display_video_difference_with_window(master_video_path, test_video_path, diff_output_path, contour_output_path)
 
