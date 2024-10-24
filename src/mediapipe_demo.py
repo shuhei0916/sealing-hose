@@ -1,3 +1,10 @@
+"""
+windows上で実行すること！
+wsl上で実行すると原因不明のエラーが出ます。
+
+参考：https://yoppa.org/mit-design4-22/14113.html
+"""
+
 import cv2
 import mediapipe as mp
 
