@@ -6,6 +6,7 @@
 import cv2
 import mediapipe as mp
 import numpy as np
+from common import find_contours, draw_contours, draw_contours_with_rectangle
 
 # MediaPipeの設定
 mp_drawing = mp.solutions.drawing_utils
@@ -71,15 +72,11 @@ with mp_pose.Pose(
         # 次のループのためにフレームを更新
         frame1_gray = frame2_gray
 
-        # 動体検知の枠線付き表示
-        motion_frame_with_contours = cv2.cvtColor(motion_frame, cv2.COLOR_GRAY2BGR)
-        for contour in contours:
-            if cv2.contourArea(contour) > 500:  # 小さいノイズを無視するためのしきい値
-                x, y, w, h = cv2.boundingRect(contour)
-                cv2.rectangle(motion_frame_with_contours, (x, y), (x+w, y+h), (0, 255, 0), 2)
+        motion_contours = find_contours(motion_frame)
+        frame_with_contours = draw_contours_with_rectangle(current_frame.copy(), motion_contours)
 
         # 各フレームを並べて表示（左: 骨格検出, 中央: 枠線付き差分, 右: 動体差分）
-        combined_frame = np.hstack((image_bgr, motion_frame_with_contours, cv2.cvtColor(motion_frame, cv2.COLOR_GRAY2BGR)))
+        combined_frame = np.hstack((image_bgr, frame_with_contours, cv2.cvtColor(motion_frame, cv2.COLOR_GRAY2BGR)))
 
         # 画像を表示（左右反転も適用）
         cv2.imshow('Pose (Left), Motion Detection with Contours (Center), Motion Detection (Right)', cv2.flip(combined_frame, 1))
