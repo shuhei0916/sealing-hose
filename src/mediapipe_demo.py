@@ -14,7 +14,7 @@ mp_drawing_styles = mp.solutions.drawing_styles
 mp_pose = mp.solutions.pose
 
 # Webカメラから入力
-cap = cv2.VideoCapture('data/vtest.avi')  # 0はデフォルトのWebカメラを指定
+cap = cv2.VideoCapture(0)  # 0はデフォルトのWebカメラを指定
 
 # Poseのインスタンスを作成
 with mp_pose.Pose(

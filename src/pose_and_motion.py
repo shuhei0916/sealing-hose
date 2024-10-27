@@ -1,6 +1,6 @@
 """
 2024展示会用のデモプログラム。
-左画面に動体検知、右画面に骨格検知を行います。
+左画面に骨格検知、中央に動体検知の枠線付き差分、右画面に動体検知の差分を行います。
 """
 
 import cv2
@@ -24,7 +24,8 @@ def detect_motion(frame1_gray, frame2_gray):
     _, thresh = cv2.threshold(motion_diff, 90, 255, cv2.THRESH_BINARY)
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
     dilated = cv2.dilate(thresh, kernel, iterations=2)
-    return motion_diff
+    contours, _ = cv2.findContours(dilated, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
+    return motion_diff, contours
 
 # Webカメラから入力
 cap = cv2.VideoCapture(0)
@@ -49,7 +50,7 @@ with mp_pose.Pose(
         if not ret:
             break
 
-        # 骨格検知処理用のフレーム（左半分に表示）
+        # 骨格検知処理用のフレーム（左側）
         image_rgb = cv2.cvtColor(current_frame, cv2.COLOR_BGR2RGB)
         results = pose.process(image_rgb)
         image_bgr = cv2.cvtColor(image_rgb, cv2.COLOR_RGB2BGR)
@@ -57,27 +58,31 @@ with mp_pose.Pose(
         # 検出された骨格を描画
         if results.pose_landmarks:
             mp_drawing.draw_landmarks(
-                image_bgr,  # 左半分に表示される骨格検知
+                image_bgr,  # 左側の骨格検知
                 results.pose_landmarks,
                 mp_pose.POSE_CONNECTIONS,
                 landmark_drawing_spec=mp_drawing_styles.get_default_pose_landmarks_style()
             )
 
-        # 動体検知処理用のフレーム（右半分に表示）
+        # 動体検知処理
         frame2_gray = cv2.cvtColor(current_frame, cv2.COLOR_BGR2GRAY)
-        motion_frame = detect_motion(frame1_gray, frame2_gray)
+        motion_frame, contours = detect_motion(frame1_gray, frame2_gray)
 
         # 次のループのためにフレームを更新
         frame1_gray = frame2_gray
 
-        # 画像を左右に並べて表示するための準備
-        motion_frame_colored = cv2.cvtColor(motion_frame, cv2.COLOR_GRAY2BGR)
+        # 動体検知の枠線付き表示
+        motion_frame_with_contours = cv2.cvtColor(motion_frame, cv2.COLOR_GRAY2BGR)
+        for contour in contours:
+            if cv2.contourArea(contour) > 500:  # 小さいノイズを無視するためのしきい値
+                x, y, w, h = cv2.boundingRect(contour)
+                cv2.rectangle(motion_frame_with_contours, (x, y), (x+w, y+h), (0, 255, 0), 2)
 
-        # 左半分：骨格検知結果、右半分：動体検知結果
-        combined_frame = np.hstack((image_bgr, motion_frame_colored))
+        # 各フレームを並べて表示（左: 骨格検出, 中央: 枠線付き差分, 右: 動体差分）
+        combined_frame = np.hstack((image_bgr, motion_frame_with_contours, cv2.cvtColor(motion_frame, cv2.COLOR_GRAY2BGR)))
 
         # 画像を表示（左右反転も適用）
-        cv2.imshow('Pose (Left) & Motion Detection (Right)', cv2.flip(combined_frame, 1))
+        cv2.imshow('Pose (Left), Motion Detection with Contours (Center), Motion Detection (Right)', cv2.flip(combined_frame, 1))
 
         # ESCキーが押されたらループを終了
         if cv2.waitKey(5) & 0xFF == 27:
