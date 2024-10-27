@@ -25,10 +25,10 @@ def draw_contours(frame, contours, min_area=200):
     return frame
 
 
-def draw_contours_with_rectangle(frame, contours):
+def draw_contours_with_rectangle(frame, contours, min_area=200):
     for contour in contours:
         area = cv2.contourArea(contour)
-        if area > 200:
+        if area > min_area:
             x, y, w, h = cv2.boundingRect(contour)
             cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 255, 0), 5, cv2.LINE_4)
     return frame
