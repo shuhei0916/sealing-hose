@@ -44,6 +44,7 @@ frame1_gray = cv2.cvtColor(prev_frame, cv2.COLOR_BGR2GRAY)
 # Poseのインスタンスを作成
 with mp_pose.Pose(
     min_detection_confidence=0.5,
+    enable_segmentation=True,
     min_tracking_confidence=0.5
 ) as pose:
     while cap.isOpened():
@@ -73,7 +74,7 @@ with mp_pose.Pose(
         frame1_gray = frame2_gray
 
         motion_contours = find_contours(motion_frame, threshold_value=30)
-        frame_with_contours = draw_contours(current_frame.copy(), motion_contours, min_area=300)
+        frame_with_contours = draw_contours_with_rectangle(current_frame.copy(), motion_contours, min_area=600)
 
         # 各フレームを並べて表示（左: 骨格検出, 中央: 枠線付き差分, 右: 動体差分）
         combined_frame = np.hstack((image_bgr, frame_with_contours, cv2.cvtColor(motion_frame, cv2.COLOR_GRAY2BGR)))
