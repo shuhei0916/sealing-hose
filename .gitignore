@@ -1,5 +1,19 @@
+# データ関連
 data/
-.venv/
-__pycache__/
-Adobe Premiere Pro Auto-Save/
 docs/
+
+# PyInstaller ビルドによる生成物
+/build/
+/dist/
+/__pycache__/
+/*.spec
+
+# 仮想環境関連
+.venv/
+venv/
+env/
+
+# その他
+Adobe Premiere Pro Auto-Save/
+*.pyc
+*.pyo
