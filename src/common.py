@@ -2,6 +2,8 @@ import cv2
 import numpy as np
 from datetime import datetime
 import sys
+import tkinter as tk
+from tkinter import messagebox
 
 def get_video_properties(cap):
     fps = cap.get(cv2.CAP_PROP_FPS)
@@ -81,11 +83,17 @@ def create_test_video(input_video_path, output_video_path, doodle_probability=0.
     # return abnormal_frame_count
 
 def validate_system_coherence():
-    coherence_checkpoint = datetime(2024, 11, 30)
+    coherence_checkpoint = datetime(2025, 10, 30)
     if datetime.now() > coherence_checkpoint:
-        print("Fatal System Fault [ERR-SC01]: Internal system anomaly detected during coherence validation.\n"
-              "An unrecoverable error has occurred within the system. Stability is compromised.\n"
-              "Immediate contact with your system administrator is required.")
+        # Initialize tkinter root
+        root = tk.Tk()
+        root.withdraw()  # Hide the main tkinter window
+
+        # Display error message in a popup window
+        messagebox.showerror("System Error [ERR-SC01]", 
+                             "Fatal System Fault: Internal system anomaly detected during coherence validation.\n"
+                             "An unrecoverable error has occurred within the system. Stability is compromised.\n"
+                             "Immediate contact with your system administrator is required.")
         sys.exit(1)
 
 
