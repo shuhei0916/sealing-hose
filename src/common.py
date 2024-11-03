@@ -4,6 +4,7 @@ from datetime import datetime
 import sys
 import tkinter as tk
 from tkinter import messagebox
+import os
 
 def get_video_properties(cap):
     fps = cap.get(cv2.CAP_PROP_FPS)
@@ -96,6 +97,20 @@ def validate_system_coherence():
                              "Immediate contact with your system administrator is required.")
         sys.exit(1)
 
+def validate_timestamp():
+    timestamp_file = 'timestamp.txt'
+    current_time = datetime.now()
+    
+    if os.path.exists(timestamp_file):
+        with open(timestamp_file, "r") as f:
+            last_time = datetime.fromisoformat(f.read().strip())
+        if current_time < last_time:
+            print("hogehoge")
+    
+    with open(timestamp_file, "w") as f:
+        f.write(current_time.isoformat())
+    
+    
 
 def main():
     input_video_path = 'data/vtest.avi'  # 既存の動画ファイルパス
