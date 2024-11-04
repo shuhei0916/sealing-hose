@@ -101,17 +101,19 @@ def validate_timestamp():
     os.makedirs('logs', exist_ok=True)
     
     
-    timestamp_file = 'timestamp.txt'
+    timestamp_file_path = 'logs/timestamp.txt'
     current_time = datetime.now()
     
-    # if os.path.exists(timestamp_file):
+    if os.path.exists(timestamp_file_path):
+        print("hoge")
+        
     #     with open(timestamp_file, "r") as f:
     #         last_time = datetime.fromisoformat(f.read().strip())
     #     if current_time < last_time:
     #         print("hogehoge")
     
-    # with open(timestamp_file, "w") as f:
-    #     f.write(current_time.isoformat)
+    with open(timestamp_file_path, "w") as f:
+        f.write(current_time.isoformat())
     
     
 
