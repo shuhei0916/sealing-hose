@@ -107,10 +107,11 @@ def validate_timestamp():
     if os.path.exists(timestamp_file_path):
         print("hoge")
         
-    #     with open(timestamp_file, "r") as f:
-    #         last_time = datetime.fromisoformat(f.read().strip())
-    #     if current_time < last_time:
-    #         print("hogehoge")
+        with open(timestamp_file_path, "r") as f:
+            last_time = datetime.fromisoformat(f.read().strip())
+        if current_time < last_time:
+            print("hogehoge")
+            raise Exception("system time anomaly detected!")
     
     with open(timestamp_file_path, "w") as f:
         f.write(current_time.isoformat())
