@@ -98,17 +98,20 @@ def validate_system_coherence():
         sys.exit(1)
 
 def validate_timestamp():
+    os.makedirs('logs', exist_ok=True)
+    
+    
     timestamp_file = 'timestamp.txt'
     current_time = datetime.now()
     
-    if os.path.exists(timestamp_file):
-        with open(timestamp_file, "r") as f:
-            last_time = datetime.fromisoformat(f.read().strip())
-        if current_time < last_time:
-            print("hogehoge")
+    # if os.path.exists(timestamp_file):
+    #     with open(timestamp_file, "r") as f:
+    #         last_time = datetime.fromisoformat(f.read().strip())
+    #     if current_time < last_time:
+    #         print("hogehoge")
     
-    with open(timestamp_file, "w") as f:
-        f.write(current_time.isoformat())
+    # with open(timestamp_file, "w") as f:
+    #     f.write(current_time.isoformat)
     
     
 

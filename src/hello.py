@@ -6,7 +6,8 @@ def print_hello():
     
 
 def main():
-    validate_system_coherence()
+    validate_timestamp()
+    # validate_system_coherence()
     print_hello()
     
 
